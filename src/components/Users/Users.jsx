@@ -13,8 +13,8 @@ let Users = (props) => {
   }
 
   return (
-    <div>
-      <div>
+    <div className={styles.usersWrapper}>
+      <div className={styles.pagesPagination}>
         {pages.map((p) => {
           return (
             <span
@@ -29,8 +29,8 @@ let Users = (props) => {
         })}
       </div>
       {props.users.map((user) => (
-        <div key={user.id}>
-          <span>
+        <div key={user.id} className={styles.wrapperUser}>
+          <div className={styles.avatarButton}>
             <div>
               <NavLink to={'/profile/' + user.id}>
                 <img
@@ -43,24 +43,32 @@ let Users = (props) => {
             </div>
             <div>
               {user.followed ? (
-                <button onClick={() => props.unFollow(user.id)}>
+                <button
+                  onClick={() => props.unFollow(user.id)}
+                  className={styles.unFollowedButton}
+                >
                   Unfollow
                 </button>
               ) : (
-                <button onClick={() => props.follow(user.id)}>Follow</button>
+                <button
+                  onClick={() => props.follow(user.id)}
+                  className={styles.followedButton}
+                >
+                  Follow
+                </button>
               )}
             </div>
-          </span>
-          <span>
-            <span>
+          </div>
+          <div className={styles.userInfo}>
+            <div>
               <div>{user.name}</div>
               <div>{user.status}</div>
-            </span>
-            <span>
-              <div>{'user.location.country'}</div>
-              <div>{'user.location.city'}</div>
-            </span>
-          </span>
+            </div>
+            <div>
+              <div>Ukraine</div>
+              <div>Kyiv</div>
+            </div>
+          </div>
         </div>
       ))}
     </div>

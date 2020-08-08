@@ -1,3 +1,19 @@
+.usersWrapper {
+  padding: 3% 0;
+}
+
+.pagesPagination {
+  display: flex;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.pagesPagination > span {
+  margin-right: 10px;
+  color: white;
+  cursor: pointer;
+}
+
 .userPhoto {
   width: 100px;
   border-radius: 50%;
@@ -5,4 +21,54 @@
 
 .selectedPage {
   font-weight: bold;
+  font-size: 20px;
+}
+
+.wrapperUser {
+  display: flex;
+}
+
+.wrapperUser > div {
+  width: 40%;
+  margin-top: 5%;
+}
+
+.avatarButton {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.userInfo {
+  font-weight: bold;
+  color: white;
+}
+
+.userInfo > div {
+  margin-top: 5%;
+}
+
+.unFollowedButton {
+  width: 100px;
+  height: 30px;
+  font-size: 16px;
+  color: white;
+  background-color: crimson;
+  border: none;
+  border-radius: 30px;
+  outline: none;
+  cursor: pointer;
+}
+
+.followedButton {
+  width: 100px;
+  height: 30px;
+  font-size: 16px;
+  color: white;
+  background-color: chartreuse;
+  border: none;
+  border-radius: 30px;
+  outline: none;
+  cursor: pointer;
 }
