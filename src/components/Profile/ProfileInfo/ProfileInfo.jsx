@@ -1,21 +1,37 @@
 import React from 'react';
 import styles from './ProfileInfo.module.css';
+import userPhoto from '../../../assets/images/user.png';
+import Loader from '../../Loader/Loader';
 
 const ProfileInfo = (props) => {
+  if (!props.profile) {
+    return <Loader />;
+  }
+
   return (
-    <div>
+    <div className={styles.wrapperProfile}>
       <div>
         <img
-          className='profile-bg'
+          className={styles.profileBg}
           src='https://filedn.com/ltOdFv1aqz1YIFhf4gTY8D7/ingus-info/BLOGS/Photography-stocks3/stock-photography-slider.jpg'
           alt=''
         />
       </div>
       <div className='ava' className={styles.descriptionBlock}>
-        <img
-          src='https://image.freepik.com/free-photo/image-human-brain_99433-298.jpg'
-          alt=''
-        />
+        <div>
+          <img
+            src={
+              props.profile.photos.large !== null
+                ? props.profile.photos.large
+                : userPhoto
+            }
+            className={styles.userPhoto}
+          />
+        </div>
+        <div className={styles.nameBlock}>
+          <div>{props.profile.fullName}</div>
+          <div>{props.profile.aboutMe}</div>
+        </div>
       </div>
     </div>
   );

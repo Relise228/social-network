@@ -1,46 +1,45 @@
 import React from 'react';
 import styles from './users.module.css';
+import userPhoto from '../../assets/images/user.png';
+import {NavLink} from 'react-router-dom';
+
 let Users = (props) => {
-  if (props.users.length === 0) {
-    debugger;
-    props.setUsers([
-      {
-        id: 1,
-        photoUrl:
-          'https://roscongress.org/upload/resize_cache/iblock/f45/289_289_2/e3e9a63c93ad395edf9496497d5273fb_5bcb50678a4c08dde6f4b2697ecd4f24.jpg',
-        fullName: 'Dmitry',
-        status: 'I am a boss',
-        location: {city: 'Minsk', country: 'Belarus'},
-        followed: false,
-      },
-      {
-        id: 2,
-        photoUrl:
-          'https://roscongress.org/upload/resize_cache/iblock/f45/289_289_2/e3e9a63c93ad395edf9496497d5273fb_5bcb50678a4c08dde6f4b2697ecd4f24.jpg',
-        fullName: 'Sasha',
-        status: 'I am a boss too',
-        location: {city: 'Moscow', country: 'Russia'},
-        followed: true,
-      },
-      {
-        id: 3,
-        photoUrl:
-          'https://roscongress.org/upload/resize_cache/iblock/f45/289_289_2/e3e9a63c93ad395edf9496497d5273fb_5bcb50678a4c08dde6f4b2697ecd4f24.jpg',
-        fullName: 'Andrew',
-        status: 'I am a boss too',
-        location: {city: 'Kiev', country: 'Ukraine'},
-        followed: false,
-      },
-    ]);
+  let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
+
+  let pages = [];
+
+  for (let i = 1; i <= 10; i++) {
+    pages.push(i);
   }
 
   return (
     <div>
+      <div>
+        {pages.map((p) => {
+          return (
+            <span
+              className={props.currentPage === p && styles.selectedPage}
+              onClick={(e) => {
+                props.onPageChanged(p);
+              }}
+            >
+              {p}
+            </span>
+          );
+        })}
+      </div>
       {props.users.map((user) => (
         <div key={user.id}>
           <span>
             <div>
-              <img src={user.photoUrl} className={styles.userPhoto} />
+              <NavLink to={'/profile/' + user.id}>
+                <img
+                  src={
+                    user.photos.small !== null ? user.photos.small : userPhoto
+                  }
+                  className={styles.userPhoto}
+                />
+              </NavLink>
             </div>
             <div>
               {user.followed ? (
@@ -54,12 +53,12 @@ let Users = (props) => {
           </span>
           <span>
             <span>
-              <div>{user.fullName}</div>
+              <div>{user.name}</div>
               <div>{user.status}</div>
             </span>
             <span>
-              <div>{user.location.country}</div>
-              <div>{user.location.city}</div>
+              <div>{'user.location.country'}</div>
+              <div>{'user.location.city'}</div>
             </span>
           </span>
         </div>
