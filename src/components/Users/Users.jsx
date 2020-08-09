@@ -12,6 +12,14 @@ let Users = (props) => {
     pages.push(i);
   }
 
+  const follow = (userId) => {
+    props.follow(userId);
+  };
+
+  const unFollow = (userId) => {
+    props.unFollow(userId);
+  };
+
   return (
     <div className={styles.usersWrapper}>
       <div className={styles.pagesPagination}>
@@ -44,14 +52,20 @@ let Users = (props) => {
             <div>
               {user.followed ? (
                 <button
-                  onClick={() => props.unFollow(user.id)}
+                  disabled={props.followingInProgress.some(
+                    (id) => id === user.id
+                  )}
+                  onClick={() => unFollow(user.id)}
                   className={styles.unFollowedButton}
                 >
                   Unfollow
                 </button>
               ) : (
                 <button
-                  onClick={() => props.follow(user.id)}
+                  onClick={() => follow(user.id)}
+                  disabled={props.followingInProgress.some(
+                    (id) => id === user.id
+                  )}
                   className={styles.followedButton}
                 >
                   Follow
