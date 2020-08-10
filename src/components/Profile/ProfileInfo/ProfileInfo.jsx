@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './ProfileInfo.module.css';
 import userPhoto from '../../../assets/images/user.png';
 import Loader from '../../Loader/Loader';
+import ProfileStatus from './ProfileStatus';
 
 const ProfileInfo = (props) => {
   if (!props.profile) {
@@ -30,7 +31,10 @@ const ProfileInfo = (props) => {
         </div>
         <div className={styles.nameBlock}>
           <div>{props.profile.fullName}</div>
-          <div>{props.profile.aboutMe}</div>
+          <ProfileStatus
+            status={props.status}
+            updateStatus={props.updateStatus}
+          />
         </div>
       </div>
     </div>
