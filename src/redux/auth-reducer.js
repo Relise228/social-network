@@ -23,11 +23,13 @@ const authReducer = (state = initialState, action) => {
   }
 };
 
+// @ACTION CREATORS
 export const setAuthUserData = (userId, login, email) => ({
   type: SET_USER_DATA,
   data: {userId, email, login},
 });
 
+// @THUNKS
 export const setUserData = () => (dispatch) => {
   authAPI.getUserData().then((data) => {
     if (data.resultCode === 0) {
