@@ -6,12 +6,23 @@ const Header = (props) => {
   return (
     <header className={styles.header}>
       <img
-        src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Instagram_logo_2016.svg/1200px-Instagram_logo_2016.svg.png'
+        src='https://hugeturtle.com/wp-content/uploads/2019/08/1_VeM-5lsAtrrJ4jXH96h5kg.png'
         alt=''
       />
 
       <div className={styles.loginBlock}>
-        {props.isAuth ? props.login : <NavLink to='/login'>Login</NavLink>}
+        {props.isAuth ? (
+          <div>
+            {props.login}
+            <button onClick={props.logout} className={styles.button}>
+              Logout
+            </button>
+          </div>
+        ) : (
+          <NavLink to='/login' className={styles.button}>
+            Login
+          </NavLink>
+        )}
       </div>
     </header>
   );

@@ -3,6 +3,7 @@ import {profileAPI} from '../api/api';
 const ADD_POST = 'ADD-POST';
 const SET_USER_PROFILE = 'SET-USE-PROFILE';
 const SET_STATUS = 'SET_STATUS';
+const CLEAR_USER_PROFILE = 'CLEAR_USER_PROFILE';
 
 let initialState = {
   postsData: [
@@ -42,6 +43,12 @@ const profileReducer = (state = initialState, action) => {
         status: action.status,
       };
     }
+    case CLEAR_USER_PROFILE: {
+      return {
+        ...state,
+        profile: null,
+      };
+    }
     default:
       return state;
   }
@@ -53,6 +60,10 @@ export const addPost = (newPostText) => ({type: ADD_POST, newPostText});
 export const setUserProfile = (profile) => ({
   type: SET_USER_PROFILE,
   profile,
+});
+
+export const clearUserProfile = () => ({
+  type: CLEAR_USER_PROFILE,
 });
 
 export const setStatus = (status) => ({

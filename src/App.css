@@ -1,11 +1,17 @@
+:root {
+  background-color: #181818;
+  color: white;
+}
+
 .app-wrapper {
   margin: 0 auto;
   display: grid;
   width: 1200px;
+  min-height: 100vh;
   grid-template-areas:
     'header header'
     'nav content';
-  grid-template-rows: 60px 1fr;
+  grid-template-rows: 100px 1fr;
   grid-template-columns: 2fr 10fr;
   /*grid-gap: 10px;*/
 }
@@ -16,5 +22,5 @@
 
 .app-wrapper-content {
   grid-area: content;
-  background-color: darkmagenta;
+  background-color: #202020;
 }
