@@ -3,6 +3,7 @@ import styles from './ProfileInfo.module.css';
 import userPhoto from '../../../assets/images/user.png';
 import Loader from '../../Loader/Loader';
 import ProfileStatus from './ProfileStatus';
+import ProfileStatusWithHooks from './ProfileStatusWithHooks';
 
 const ProfileInfo = (props) => {
   if (!props.profile) {
@@ -31,7 +32,7 @@ const ProfileInfo = (props) => {
         </div>
         <div className={styles.nameBlock}>
           <div>{props.profile.fullName}</div>
-          <ProfileStatus
+          <ProfileStatusWithHooks
             status={props.status}
             updateStatus={props.updateStatus}
           />
