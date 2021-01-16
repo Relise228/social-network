@@ -1,4 +1,4 @@
-import * as axios from 'axios';
+import axios from 'axios';
 
 const instance = axios.create({
   withCredentials: true,
@@ -14,41 +14,65 @@ export const usersAPI = {
       .get(`users?page=${currentPage}&count=${pageSize}`)
       .then((response) => response.data);
   },
-  follow: (userId) => {
+  follow: (userId: number) => {
     return instance.post(`follow/${userId}`).then((response) => response.data);
   },
-  unFollow: (userId) => {
+  unFollow: (userId: number) => {
     return instance
       .delete(`follow/${userId}`)
       .then((response) => response.data);
   },
 };
 
+type ProfileDataType = {
+  id: number
+  email: string
+  login: string
+}
+
+export enum ResultCodesEnum  {
+  Success = 0,
+  Error = 1
+}
+
+type GetProfileType = {
+  data: ProfileDataType
+  resultCode: ResultCodesEnum
+  messages: Array<string>
+}
+
+type LoginResponseType = {
+  data: {userId: number}
+  resultCode: ResultCodesEnum
+  messages: Array<string>
+}
+
 export const authAPI = {
-  getUserData: () => instance.get(`auth/me`).then((response) => response.data),
-  login: (email, password, rememberMe = false) =>
+  getUserData: () => instance.get<GetProfileType>(`auth/me`).then((response) => response.data),
+  login: (email: string, password: string, rememberMe = false) =>
     instance
-      .post(`auth/login`, {email, password, rememberMe})
+      .post<LoginResponseType>(`auth/login`, {email, password, rememberMe})
       .then((response) => {
-        console.log(response.data);
         return response.data;
       }),
   logout: () => instance.delete(`auth/login`).then((response) => response.data),
 };
 
+
+
 export const profileAPI = {
-  getProfile: (userId) => {
+  getProfile: (userId: number) => {
     return instance.get(`profile/${userId}`).then((response) => {
       console.log(response.data);
       return response.data;
     });
   },
-  getStatus: (userId) => {
+  getStatus: (userId: number) => {
     return instance
       .get(`profile/status/${userId}`)
       .then((response) => response.data);
   },
-  updateStatus: (status) => {
+  updateStatus: (status: string) => {
     return instance
       .put(`profile/status`, {status})
       .then((response) => response.data);

@@ -2,11 +2,10 @@ import React from 'react';
 import styles from './ProfileInfo.module.css';
 import userPhoto from '../../../assets/images/user.png';
 import Loader from '../../Loader/Loader';
-import ProfileStatus from './ProfileStatus';
 import ProfileStatusWithHooks from './ProfileStatusWithHooks';
 
-const ProfileInfo = (props) => {
-  if (!props.profile) {
+const ProfileInfo = ({profile, status, updateStatus}) => {
+  if (!profile) {
     return <Loader />;
   }
 
@@ -23,19 +22,14 @@ const ProfileInfo = (props) => {
         <div>
           <img
             src={
-              props.profile.photos.large !== null
-                ? props.profile.photos.large
-                : userPhoto
+              profile.photos.large !== null ? profile.photos.large : userPhoto
             }
             className={styles.userPhoto}
           />
         </div>
         <div className={styles.nameBlock}>
-          <div>{props.profile.fullName}</div>
-          <ProfileStatusWithHooks
-            status={props.status}
-            updateStatus={props.updateStatus}
-          />
+          <div>{profile.fullName}</div>
+          <ProfileStatusWithHooks status={status} updateStatus={updateStatus} />
         </div>
       </div>
     </div>

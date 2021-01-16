@@ -1,14 +1,16 @@
-import {authAPI} from '../api/api';
-import {stopSubmit} from 'redux-form';
 import {setUserData} from './auth-reducer';
 
 const SET_INITIALIZED = 'SET_INITIALIZED';
 
-let initialState = {
+type InitialStateType = {
+  initialized: boolean
+}
+
+let initialState: InitialStateType = {
   initialized: false,
 };
 
-const appReducer = (state = initialState, action) => {
+const appReducer = (state = initialState, action: any): InitialStateType => {
   switch (action.type) {
     case SET_INITIALIZED:
       return {
@@ -20,13 +22,17 @@ const appReducer = (state = initialState, action) => {
   }
 };
 
+type InitializingSuccessActionType = {
+  type: typeof SET_INITIALIZED
+}
+
 // @ACTION CREATORS
-export const initializingSuccess = () => ({
+export const initializingSuccess = (): InitializingSuccessActionType => ({
   type: SET_INITIALIZED,
 });
 
 // @THUNKS
-export const initializeApp = () => async (dispatch) => {
+export const initializeApp = () => async (dispatch: Function) => {
   await dispatch(setUserData());
   dispatch(initializingSuccess());
 };

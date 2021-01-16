@@ -5,12 +5,14 @@ import {reduxForm, Field} from 'redux-form';
 import {requiredField, maxLength10} from '../../../utils/validators/validators';
 import {Textarea} from '../../../common/FormsControls/FormsControls';
 
-const MyPosts = (props) => {
-  const postsElements = props.posts.map((data) => (
+const MyPosts = React.memo((props) => {
+  console.log('componentDidUpdate');
+
+  let postsElements = props.posts.map((data) => (
     <Post message={data.message} likesCount={data.likesCount} key={data.id} />
   ));
 
-  const onAddPost = (values) => {
+  let onAddPost = (values) => {
     props.addPost(values.newPostText);
   };
 
@@ -23,7 +25,7 @@ const MyPosts = (props) => {
       <div className={styles.posts}>{postsElements}</div>
     </div>
   );
-};
+});
 
 const PostsForm = (props) => {
   return (
