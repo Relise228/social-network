@@ -1,22 +1,15 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import {
-    follow,
-    unFollow,
-    setCurrentPage,
-    getUsers,
-} from '../../redux/users-reducer';
+import {actions, follow, getUsers, unFollow,} from '../../redux/users-reducer';
 import Users from './Users';
 import Loader from '../Loader/Loader';
-import {withAuthRedirect} from '../../hoc/withAuthRedirect';
 import {compose} from 'redux';
 import {
-    getPageSize,
-    getAllUsers,
-    getTotalUsersCount,
     getCurrentPage,
-    getIsFetching,
     getFollowingInProgress,
+    getIsFetching,
+    getPageSize,
+    getTotalUsersCount,
     getUsersSuper,
 } from '../../redux/users-selectors';
 import {UserType} from "../../types/types";
@@ -85,23 +78,12 @@ let mapStateToProps = (state: AppStateType): MapStatePropsType => {
     };
 };
 
-// let mapDispatchToProps = (dispatch) => {
-//   return {
-//     follow: (userId) => dispatch(followAC(userId)),
-//     unFollow: (userId) => dispatch(unFollowAC(userId)),
-//     setUsers: (users) => dispatch(setUsersAC(users)),
-//     setCurrentPage: (currentPage) => dispatch(setCurrentPageAC(currentPage)),
-//     setTotalUsersCount: (totalCount) =>
-//       dispatch(setUsersTotalCountAC(totalCount)),
-//     toggleIsFetching: (isFetching) => dispatch(toggleIsFetchingAC(isFetching)),
-//   };
-// };
 
 export default compose(
     connect<MapStatePropsType, MapDispatchPropsType, OwnPropsType, AppStateType>(mapStateToProps, {
         follow,
         unFollow,
-        setCurrentPage,
+        setCurrentPage: actions.setCurrentPage,
         getUsers,
     })
 )(UsersContainer);
