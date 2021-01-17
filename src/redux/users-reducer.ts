@@ -87,12 +87,12 @@ export const actions = {
 
 
 
-type GetStateType = () => AppStateType
+
 type DispatchType = Dispatch<ActionsTypes>
 type ThunkType = ThunkAction<Promise<void>, AppStateType, unknown, ActionsTypes>
 // @THUNKS
 export const getUsers = (currentPage: number, pageSize: number): ThunkType =>
-    async (dispatch, getState) => {
+    async (dispatch) => {
         dispatch(actions.toggleIsFetching(true));
         let response = await usersAPI.getUsers(currentPage, pageSize);
         dispatch(actions.setUsers(response.items));
@@ -116,7 +116,7 @@ const _followUnfollowFlow = async (
 };
 
 export const follow = (userId: number): ThunkType => async (dispatch) => {
-    _followUnfollowFlow(
+    await _followUnfollowFlow(
         dispatch,
         userId,
         usersAPI.follow.bind(usersAPI),
@@ -125,7 +125,7 @@ export const follow = (userId: number): ThunkType => async (dispatch) => {
 };
 
 export const unFollow = (userId: number): ThunkType => async (dispatch) => {
-    _followUnfollowFlow(
+    await _followUnfollowFlow(
         dispatch,
         userId,
         usersAPI.unFollow.bind(usersAPI),
