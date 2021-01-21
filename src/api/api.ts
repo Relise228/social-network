@@ -1,6 +1,7 @@
 import axios from 'axios';
+import {UserType} from "../types/types";
 
-const instance = axios.create({
+export const instance = axios.create({
   withCredentials: true,
   baseURL: 'https://social-network.samuraijs.com/api/1.0/',
   headers: {
@@ -8,73 +9,20 @@ const instance = axios.create({
   },
 });
 
-export const usersAPI = {
-  getUsers: (currentPage = 1, pageSize = 5) => {
-    return instance
-      .get(`users?page=${currentPage}&count=${pageSize}`)
-      .then((response) => response.data);
-  },
-  follow: (userId: number) => {
-    return instance.post(`follow/${userId}`).then((response) => response.data);
-  },
-  unFollow: (userId: number) => {
-    return instance
-      .delete(`follow/${userId}`)
-      .then((response) => response.data);
-  },
-};
-
-type ProfileDataType = {
-  id: number
-  email: string
-  login: string
-}
-
 export enum ResultCodesEnum  {
   Success = 0,
   Error = 1
 }
 
-type GetProfileType = {
-  data: ProfileDataType
-  resultCode: ResultCodesEnum
-  messages: Array<string>
+export type GetItemsType = {
+  items: Array<UserType>
+  totalCount: number
+  error: string | null
 }
 
-type LoginResponseType = {
-  data: {userId: number}
-  resultCode: ResultCodesEnum
+
+export type ResponseType<D = {}, RC = ResultCodesEnum> = {
+  data: D
   messages: Array<string>
+  resultCode: RC
 }
-
-export const authAPI = {
-  getUserData: () => instance.get<GetProfileType>(`auth/me`).then((response) => response.data),
-  login: (email: string, password: string, rememberMe = false) =>
-    instance
-      .post<LoginResponseType>(`auth/login`, {email, password, rememberMe})
-      .then((response) => {
-        return response.data;
-      }),
-  logout: () => instance.delete(`auth/login`).then((response) => response.data),
-};
-
-
-
-export const profileAPI = {
-  getProfile: (userId: number) => {
-    return instance.get(`profile/${userId}`).then((response) => {
-      console.log(response.data);
-      return response.data;
-    });
-  },
-  getStatus: (userId: number) => {
-    return instance
-      .get(`profile/status/${userId}`)
-      .then((response) => response.data);
-  },
-  updateStatus: (status: string) => {
-    return instance
-      .put(`profile/status`, {status})
-      .then((response) => response.data);
-  },
-};

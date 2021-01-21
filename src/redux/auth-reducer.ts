@@ -1,15 +1,8 @@
-import {authAPI, ResultCodesEnum} from '../api/api';
-import {stopSubmit} from 'redux-form';
+import {ResultCodesEnum} from '../api/api';
+import {FormAction, stopSubmit} from 'redux-form';
+import {authAPI} from "../api/auth-api";
+import {BaseThunkType, InferActionsTypes} from "./redux-store";
 
-const SET_USER_DATA = 'auth/SET_USER_DATA';
-
-// type InitialStateType = {
-//     userId: null | number,
-//     email: null | string,
-//     login: null | string,
-//     isFetching: boolean,
-//     isAuth: boolean,
-// };
 
 let initialState = {
     userId: null as number | null,
@@ -22,9 +15,9 @@ let initialState = {
 type InitialStateType = typeof initialState;
 
 
-const authReducer = (state = initialState, action: any): InitialStateType => {
+const authReducer = (state = initialState, action: AuthActionsType): InitialStateType => {
     switch (action.type) {
-        case SET_USER_DATA:
+        case 'sn/auth/SET_USER_DATA':
             return {
                 ...state,
                 ...action.payload,
@@ -36,49 +29,44 @@ const authReducer = (state = initialState, action: any): InitialStateType => {
     }
 };
 
-type SetAuthUserDataActionPayloadType = {
-    userId: number | null,
-    email: string | null,
-    login: string | null,
-    isAuth: boolean
-}
-
-type SetAuthUserDataActionType = {
-    type: typeof SET_USER_DATA,
-    payload: SetAuthUserDataActionPayloadType
-}
-
 // @ACTION CREATORS
-export const setAuthUserData = (userId: number | null, login: string | null, email: string | null, isAuth: boolean): SetAuthUserDataActionType => ({
-    type: SET_USER_DATA,
-    payload: {userId, email, login, isAuth},
-});
+type AuthActionsType = InferActionsTypes<typeof authActions>
+
+export const authActions = {
+    setAuthUserData: (userId: number | null, login: string | null, email: string | null, isAuth: boolean) => ({
+        type: 'sn/auth/SET_USER_DATA',
+        payload: {userId, email, login, isAuth},
+    } as const)
+}
+
+
 
 // @THUNKS
-export const setUserData = () => async (dispatch: Function) => {
+export const setUserData = (): ThunkType => async (dispatch) => {
     let data = await authAPI.getUserData();
-
     if (data.resultCode === ResultCodesEnum.Success) {
         let {id, login, email} = data.data;
-        dispatch(setAuthUserData(id, login, email, true));
+        dispatch(authActions.setAuthUserData(id, login, email, true));
     }
 };
 
-export const login = (email: string, password: string, rememberMe: boolean) => async (dispatch: Function) => {
+type ThunkType = BaseThunkType<AuthActionsType | FormAction>
+
+export const login = (email: string, password: string, rememberMe: boolean): ThunkType => async (dispatch) => {
     let data = await authAPI.login(email, password, rememberMe);
 
     if (data.resultCode === ResultCodesEnum.Success) {
-        dispatch(setUserData());
+       await dispatch(setUserData());
     } else {
         let message = data.messages.length > 0 ? data.messages[0] : 'Some error';
         dispatch(stopSubmit('login', {_error: message}));
     }
 };
 
-export const logout = () => async (dispatch: Function) => {
+export const logout = (): ThunkType => async (dispatch) => {
     let data = await authAPI.logout();
     if (data.resultCode === ResultCodesEnum.Success) {
-        dispatch(setAuthUserData(null, null, null, false));
+        dispatch(authActions.setAuthUserData(null, null, null, false));
     }
 };
 

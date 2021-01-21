@@ -1,13 +1,7 @@
-import {profileAPI} from '../api/api';
 import {PostType, ProfileType} from "../types/types";
-
-const ADD_POST = 'profile/ADD-POST';
-const SET_USER_PROFILE = 'profile/SET-USE-PROFILE';
-const SET_STATUS = 'profile/SET_STATUS';
-const CLEAR_USER_PROFILE = 'profile/CLEAR_USER_PROFILE';
-const DELETE_POST = 'profile/DELETE_POST';
-
-
+import {profileAPI} from "../api/profile-api";
+import {ResultCodesEnum} from "../api/api";
+import {BaseThunkType, InferActionsTypes} from "./redux-store";
 
 
 let initialState = {
@@ -24,9 +18,9 @@ export type InitialStateType = typeof  initialState;
 
 // @REDUCER
 
-const profileReducer = (state = initialState, action: any): InitialStateType => {
+const profileReducer = (state = initialState, action: ProfileActionsType): InitialStateType => {
     switch (action.type) {
-        case ADD_POST:
+        case 'sn/profile/ADD_POST':
             return {
                 ...state,
                 postsData: [
@@ -38,25 +32,25 @@ const profileReducer = (state = initialState, action: any): InitialStateType => 
                     },
                 ],
             };
-        case SET_USER_PROFILE: {
+        case 'sn/profile/SET_USER_PROFILE': {
             return {
                 ...state,
                 profile: action.profile,
             };
         }
-        case SET_STATUS: {
+        case 'sn/profile/SET_STATUS': {
             return {
                 ...state,
                 status: action.status,
             };
         }
-        case CLEAR_USER_PROFILE: {
+        case 'sn/profile/CLEAR_USER_PROFILE': {
             return {
                 ...state,
                 profile: null,
             };
         }
-        case DELETE_POST: {
+        case 'sn/profile/DELETE_POST': {
             return {
                 ...state,
                 postsData: state.postsData.filter((p) => p.id != action.postId),
@@ -68,59 +62,36 @@ const profileReducer = (state = initialState, action: any): InitialStateType => 
     }
 };
 
-type AddPostActionType = {
-    type: typeof ADD_POST,
-    newPostText: string
-}
-type DeletePostActionType = {
-    type: typeof DELETE_POST,
-    postId: number
-}
-type SetUserProfileActionType = {
-    type: typeof SET_USER_PROFILE,
-    profile: ProfileType
-}
-type ClearUserProfileActionType = {
-    type: typeof CLEAR_USER_PROFILE,
-}
-type SetStatusActionType = {
-    type: typeof SET_STATUS,
-    status: string
-}
+
 // @ACTION CREATORS
-export const addPost = (newPostText: string): AddPostActionType => ({type: ADD_POST, newPostText});
+type ProfileActionsType = InferActionsTypes<typeof profileActions>
 
-export const deletePost = (postId: number): DeletePostActionType => ({type: DELETE_POST, postId});
 
-export const setUserProfile = (profile: ProfileType): SetUserProfileActionType => ({
-    type: SET_USER_PROFILE,
-    profile,
-});
+export const profileActions = {
+    addPost: (newPostText: string) => ({type: 'sn/profile/ADD_POST', newPostText} as const),
+    deletePost: (postId: number) => ({type: 'sn/profile/DELETE_POST', postId} as const),
+    setUserProfile: (profile: ProfileType) => ({type: 'sn/profile/SET_USER_PROFILE', profile} as const),
+    clearUserProfile: () => ({type: 'sn/profile/CLEAR_USER_PROFILE'} as const),
+    setStatus: (status: string) => ({type: 'sn/profile/SET_STATUS', status} as const)
+}
 
-export const clearUserProfile = (): ClearUserProfileActionType => ({
-    type: CLEAR_USER_PROFILE,
-});
-
-export const setStatus = (status: string): SetStatusActionType => ({
-    type: SET_STATUS,
-    status,
-});
+type ThunkType = BaseThunkType<ProfileActionsType>
 
 // @THUNKS
-export const setProfile = (userId: number) => async (dispatch: any) => {
+export const setProfile = (userId: number): ThunkType => async (dispatch) => {
     let response = await profileAPI.getProfile(userId);
-    dispatch(setUserProfile(response));
+    dispatch(profileActions.setUserProfile(response));
 };
 
-export const getStatus = (userId: number) => async (dispatch: any) => {
+export const getStatus = (userId: number): ThunkType => async (dispatch) => {
     let response = await profileAPI.getStatus(userId);
-    dispatch(setStatus(response));
+    dispatch(profileActions.setStatus(response));
 };
 
-export const updateStatus = (status: string) => async (dispatch: any) => {
+export const updateStatus = (status: string): ThunkType => async (dispatch) => {
     let response = await profileAPI.updateStatus(status);
-    if (response.resultCode === 0) {
-        dispatch(setStatus(status));
+    if (response.resultCode === ResultCodesEnum.Success) {
+        dispatch(profileActions.setStatus(status));
     }
 };
 

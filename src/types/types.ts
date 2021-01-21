@@ -12,8 +12,6 @@ export type ContactsType = {
     website: string,
     youtube: string,
     mainLink: string,
-
-
 }
 export type PhotosType = {
     small: string | null,
@@ -32,4 +30,5 @@ export type UserType = {
     name: string,
     status: string,
     photos: PhotosType
+    followed: boolean
 }

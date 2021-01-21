@@ -1,7 +1,6 @@
 import React from 'react';
 import styles from './users.module.css';
 import User from './User';
-import {useState} from 'react';
 import {UserType} from "../../types/types";
 
 type PropsType = {

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ComponentType} from 'react';
 import './App.css';
 import Nav from './components/Navbar/Nav';
 import News from './components/News/News';
@@ -15,13 +15,30 @@ import {initializeApp} from './redux/app-reducer';
 import {compose} from 'redux';
 import Loader from './components/Loader/Loader';
 import {withSuspense} from "./hoc/withSuspense";
+import {AppStateType} from "./redux/redux-store";
 
-const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer')) ;
+const DialogsContainer = React.lazy(() => import('./components/Dialogs/DialogsContainer'));
 const ProfileContainer = React.lazy(() => import('./components/Profile/ProfileContainer'));
 
-class App extends React.Component {
+type MapPropsType = ReturnType<typeof mapStateToProps>
+type DispatchPropsType = {
+    initializeApp: () => void
+}
+const SuspendedProfile = withSuspense(ProfileContainer);
+const SuspendedDialogs = withSuspense(DialogsContainer);
+
+class App extends React.Component<MapPropsType & DispatchPropsType> {
+    catchAllUnhandledErrors = (e: PromiseRejectionEvent) => {
+        alert("Some error occured")
+    }
+
     componentDidMount() {
         this.props.initializeApp();
+        window.addEventListener('unhandledrejection', this.catchAllUnhandledErrors)
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('unhandledrejection', this.catchAllUnhandledErrors)
     }
 
     render() {
@@ -31,8 +48,8 @@ class App extends React.Component {
                 <HeaderContainer/>
                 <Nav/>
                 <div className='app-wrapper-content'>
-                    <Route path='/profile/:userId?' render={withSuspense(ProfileContainer)}/>
-                    <Route path='/dialogs' render={withSuspense(DialogsContainer)}/>
+                    <Route path='/profile/:userId?' render={() => <SuspendedProfile/>}/>
+                    <Route path='/dialogs' render={() => <SuspendedDialogs/>}/>
                     <Route path='/users' render={() => <UsersContainer/>}/>
                     <Route path='/login' render={() => <Login/>}/>
                     <Route path='/news' component={News}/>
@@ -44,10 +61,10 @@ class App extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: AppStateType) => ({
     initialized: state.app.initialized,
 });
-export default compose(
+export default compose<ComponentType>(
     withRouter,
     connect(mapStateToProps, {initializeApp})
 )(App);
