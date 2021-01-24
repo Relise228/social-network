@@ -6,7 +6,7 @@ import Music from './components/Music/Music';
 import Settings from './components/Settings/Settings';
 import {Route, withRouter} from 'react-router-dom';
 
-import UsersContainer from './components/Users/UsersContainer';
+import UsersPage from './components/Users/UsersContainer';
 
 import HeaderContainer from './components/Header/HeaderContainer';
 import Login from './components/Login/Login';
@@ -50,7 +50,7 @@ class App extends React.Component<MapPropsType & DispatchPropsType> {
                 <div className='app-wrapper-content'>
                     <Route path='/profile/:userId?' render={() => <SuspendedProfile/>}/>
                     <Route path='/dialogs' render={() => <SuspendedDialogs/>}/>
-                    <Route path='/users' render={() => <UsersContainer/>}/>
+                    <Route path='/users' render={() => <UsersPage />}/>
                     <Route path='/login' render={() => <Login/>}/>
                     <Route path='/news' component={News}/>
                     <Route path='/music' component={Music}/>

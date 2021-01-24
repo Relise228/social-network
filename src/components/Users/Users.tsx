@@ -1,65 +1,74 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import styles from './users.module.css';
 import User from './User';
 import {UserType} from "../../types/types";
+import Paginator from "./Paginator/Paginator";
+import {UsersSearchForm} from "./UsersSearchForm";
+import {actions, FilterType, getUsers, follow, unFollow} from "../../redux/users-reducer";
+import {useDispatch, useSelector} from "react-redux";
+import {
+    getCurrentPage,
+    getFollowingInProgress,
+    getPageSize,
+    getTotalUsersCount, getUsersFilter,
+    getUsersSuper
+} from "../../redux/users-selectors";
+
 
 type PropsType = {
-    follow: (userId: number) => void
-    unFollow: (userId: number) => void
-    onPageChanged: (p: number) => void
-    currentPage: number
-    users: Array<UserType>
-    followingInProgress: Array<number>
-    totalUsersCount: number
-    pageSize: number,
+
 }
 
-let Users: React.FC<PropsType> = (props, portionSize = 10) => {
-    let pagesCount = Math.ceil(props.totalUsersCount / props.pageSize);
+const Users: React.FC<PropsType> = (props) => {
 
-    let pages = [];
+    const totalUsersCount = useSelector(getTotalUsersCount)
+    const currentPage = useSelector(getCurrentPage)
+    const pageSize = useSelector(getPageSize)
+    const users = useSelector(getUsersSuper)
+    const followingInProgress = useSelector(getFollowingInProgress)
+    const filter = useSelector(getUsersFilter)
 
-    for (let i = 1; i <= 10; i++) {
-        pages.push(i);
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getUsers(currentPage, pageSize, filter));
+    }, [])
+
+    const onPageChanged = (pageNumber: number) => {
+        dispatch(actions.setCurrentPage(pageNumber));
+        dispatch(getUsers(pageNumber, pageSize, filter));
     }
 
+    const onFilterChanged = (filter: FilterType) => {
+        dispatch(getUsers(1, pageSize, filter));
+    }
 
-    const follow = (userId: number): void => {
-        props.follow(userId);
+    const onFollow = (userId: number): void => {
+        dispatch(follow(userId));
     };
 
-    const unFollow = (userId: number): void => {
-        props.unFollow(userId);
+    const onUnFollow = (userId: number): void => {
+        dispatch(unFollow(userId));
     };
 
     return (
         <div className={styles.usersWrapper}>
-            <div className={styles.pagesPagination}>
-                {pages
-                    .map((p) => {
-                        return (
-                            <span
-                                className={props.currentPage === p ? styles.selectedPage : ''}
-                                onClick={(e) => {
-                                    props.onPageChanged(p);
-                                }}
-                            >
-                {p}
-              </span>
-                        );
-                    })}
-            </div>
-            {props.users.map((user) => (
+            <UsersSearchForm onFilterChanged={onFilterChanged}/>
+            <Paginator totalItemsCount={totalUsersCount} pageSize={pageSize}
+                       currentPage={currentPage} onPageChanged={onPageChanged}/>
+            {users.map((user) => (
                 <User
                     user={user}
                     key={user.id}
-                    followingInProgress={props.followingInProgress}
-                    follow={follow}
-                    unFollow={unFollow}
+                    followingInProgress={followingInProgress}
+                    follow={onFollow}
+                    unFollow={onUnFollow}
                 />
             ))}
         </div>
     );
 };
+
+
 
 export default Users;
